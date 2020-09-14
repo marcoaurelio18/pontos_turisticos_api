@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+from dj_database_url import parse as dburl
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -20,12 +22,12 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '6*7*y&^r8m!hgthni5akcwwiszp@e7057qfj#zg2kqyq@nq-%d'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['pontos-turisticos-api5.herokuapp.com', 'localhost:8000', '127.0.0.1:8000']
 
 
 # Application definition
@@ -81,12 +83,8 @@ WSGI_APPLICATION = 'pontos_turisticos.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+default_dburl = 'sqlite:///' + Path.joinpath(BASE_DIR, 'db.sqlite3')
+DATABASES = {'default': config('DATABASE_URL', default=default_dburl, cast=dburl)}
 
 
 # Password validation
@@ -131,3 +129,4 @@ MEDIA_ROOT = 'imagens'
 
 MEDIA_URL = '/media/'
 
+STATIC_ROOT = Path.joinpath(BASE_DIR, 'staticfiles')
